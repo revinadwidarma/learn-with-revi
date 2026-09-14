@@ -440,55 +440,34 @@ function setLevel(key) {
 }
 
 // ---- speech ----
-let thaiVoice = null;
-function loadVoices() {
-  const voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
-  thaiVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('th')) || null;
-}
-if ('speechSynthesis' in window) {
-  loadVoices();
-  window.speechSynthesis.onvoiceschanged = loadVoices;
-}
-
-function speakWithBrowser(text) {
+function speak(text) {
   if (!('speechSynthesis' in window)) {
-    alert('Audio could not be played, and this browser has no built-in speech fallback either.');
+    alert('Speech synthesis is not supported in this browser.');
     return;
   }
+
+  // Cancel any ongoing speech
   window.speechSynthesis.cancel();
+
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang = 'th-TH';
-  if (thaiVoice) utter.voice = thaiVoice;
   utter.rate = 0.85;
+
+  // Select a Thai voice if available on the user's browser/system
+  const voices = window.speechSynthesis.getVoices();
+  const thaiVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('th'));
+  if (thaiVoice) {
+    utter.voice = thaiVoice;
+  }
+
   window.speechSynthesis.speak(utter);
 }
 
-const ttsAudio = new Audio();
-function speak(text) {
-  let fallenBack = false;
-  function fallback() {
-    if (fallenBack) return;
-    fallenBack = true;
-    clearTimeout(timeoutId);
-    speakWithBrowser(text);
-  }
-
-  ttsAudio.pause();
-  ttsAudio.oncanplay = null;
-  ttsAudio.onplaying = null;
-  ttsAudio.onerror = null;
-
-  const url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=th&client=tw-ob&q=' + encodeURIComponent(text);
-  const timeoutId = setTimeout(fallback, 1200);
-
-  ttsAudio.onplaying = () => clearTimeout(timeoutId);
-  ttsAudio.onerror = fallback;
-  ttsAudio.src = url;
-
-  const playPromise = ttsAudio.play();
-  if (playPromise && playPromise.catch) {
-    playPromise.catch(fallback);
-  }
+// Ensure browser voice list loads correctly
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = () => {
+    window.speechSynthesis.getVoices();
+  };
 }
 
 // ---- font sizing helper (content length varies a lot once numbers grow) ----
