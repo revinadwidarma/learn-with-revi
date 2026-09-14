@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thai numbers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ivory: #F2F2F2;
+    --card: #FFFFFF;
+    --ink: #1E2E32;
+    --ink-soft: #5C7C86;
+    --line: #C8D8E4;
+    --gold-deep: #3D8C79;
+    --teal: #2B6777;
+    --teal-deep: #234F5B;
+    --teal-tint: #E4F2EE;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ivory);
+    color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 4rem;
+  }
+
+  header { margin-bottom: 1.75rem; }
+
+  h1 {
+    font-family: 'Newsreader', serif;
+    font-weight: 500;
+    font-size: 34px;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.4rem;
+    color: var(--ink);
+  }
+
+  header p {
+    font-size: 15px;
+    color: var(--ink-soft);
+    margin: 0;
+    line-height: 1.6;
+    max-width: 46ch;
+  }
+
+  .levels {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 1.75rem;
+  }
+
+  .level-btn {
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--ink-soft);
+    border-radius: 999px;
+    padding: 0.45rem 0.95rem;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .level-btn.active {
+    background: var(--teal-deep);
+    border-color: var(--teal-deep);
+    color: #fff;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    position: relative;
+  }
+
+  .speak-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: var(--teal-tint);
+    color: var(--teal-deep);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 17px;
+  }
+
+  .speak-btn:active { transform: scale(0.94); }
+
+  .card-eyebrow {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin: 0 0 0.9rem;
+  }
+
+  .card-main {
+    font-family: 'Newsreader', serif;
+    font-weight: 500;
+    margin: 0;
+    line-height: 1.15;
+    color: var(--ink);
+    word-break: break-word;
+  }
+
+  .card-sub {
+    font-size: 18px;
+    color: var(--gold-deep);
+    margin: 0.6rem 0 0;
+    font-style: italic;
+    font-family: 'Newsreader', serif;
+  }
+
+  .strip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1.5rem 0 1.75rem;
+    gap: 10px;
+  }
+
+  .nav-btn {
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--ink);
+    border-radius: 8px;
+    padding: 0.55rem 0.9rem;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .nav-btn:hover { border-color: var(--ink-soft); }
+
+  .dots {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--line);
+    cursor: pointer;
+    border: none;
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  .dot.active { background: var(--teal); }
+
+  .counter-text {
+    font-size: 13px;
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+
+  .note {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-top: 1.5rem;
+    line-height: 1.6;
+  }
+
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Thai numbers</h1>
+    <p>Pick a level below, then flip the card to see the script and hear it spoken. Thai is tonal, so the sound matters as much as the spelling.</p>
+  </header>
+
+  <div class="levels" id="levels"></div>
+
+  <div class="card" id="flip-card">
+    <button class="speak-btn" id="speak-btn" aria-label="Hear pronunciation" title="Hear pronunciation">&#128266;</button>
+    <p class="card-eyebrow" id="card-eyebrow">tap the card to flip</p>
+    <p class="card-main" id="card-main">0</p>
+    <p class="card-sub" id="card-sub"></p>
+  </div>
+
+  <div class="strip">
+    <button class="nav-btn" id="prev-btn">&larr; back</button>
+    <div class="dots" id="dots"></div>
+    <span class="counter-text hidden" id="counter-text"></span>
+    <button class="nav-btn" id="next-btn">next &rarr;</button>
+  </div>
+
+  <p class="note" id="learn-note"></p>
+
+</div>
+
+<script>
+// ---- Thai number generator, handles arbitrarily large integers ----
+const unitsThai = ["","หนึ่ง","สอง","สาม","สี่","ห้า","หก","เจ็ด","แปด","เก้า"];
+const unitsRom  = ["","nèung","sŏng","săam","sìi","hâa","hòk","jèt","bpàet","gâo"];
+const placesThai = ["","สิบ","ร้อย","พัน","หมื่น","แสน"];
+const placesRom  = ["","sìp","rói","pan","mèun","săen"];
+
+// Converts a number under 1,000,000. forcedContext=true means this chunk
+// trails a higher place value (e.g. after "ล้าน"), so a lone final "1"
+// still becomes เอ็ด instead of หนึ่ง.
+function digitsToThai(num, forcedContext) {
+  const digits = String(num).split('').map(Number);
+  const len = digits.length;
+  let thai = "", rom = "";
+  for (let i = 0; i < len; i++) {
+    const digit = digits[i];
+    const place = len - 1 - i;
+    if (digit === 0) continue;
+    if (place === 0) {
+      if (digit === 1 && (len > 1 || forcedContext)) {
+        thai += "เอ็ด"; rom += (rom ? " " : "") + "èt";
+      } else {
+        thai += unitsThai[digit]; rom += (rom ? " " : "") + unitsRom[digit];
+      }
+    } else if (place === 1) {
+      if (digit === 1) {
+        thai += "สิบ"; rom += (rom ? " " : "") + "sìp";
+      } else if (digit === 2) {
+        thai += "ยี่สิบ"; rom += (rom ? " " : "") + "yîi sìp";
+      } else {
+        thai += unitsThai[digit] + "สิบ"; rom += (rom ? " " : "") + unitsRom[digit] + " sìp";
+      }
+    } else {
+      thai += unitsThai[digit] + placesThai[place];
+      rom += (rom ? " " : "") + unitsRom[digit] + " " + placesRom[place];
+    }
+  }
+  return { thai, rom };
+}
+
+// Beyond a million, Thai repeats ล้าน as the anchor (10,000,000 = สิบล้าน,
+// 1,000,000,000 = พันล้าน, and so on), so we recurse in chunks of 1e6.
+function megaThai(num, forcedContext) {
+  if (num < 1000000) return digitsToThai(num, forcedContext);
+  const chunk = Math.floor(num / 1000000);
+  const remainder = num % 1000000;
+  const chunkResult = megaThai(chunk, false);
+  let thai = chunkResult.thai + "ล้าน";
+  let rom = chunkResult.rom + " láan";
+  if (remainder > 0) {
+    const remResult = digitsToThai(remainder, true);
+    thai += remResult.thai;
+    rom += " " + remResult.rom;
+  }
+  return { thai, rom };
+}
+
+function thaiNumber(num) {
+  if (num === 0) return { n: num, thai: "ศูนย์", rom: "sŏon" };
+  const r = megaThai(num, false);
+  return { n: num, thai: r.thai, rom: r.rom };
+}
+
+// ---- levels ----
+const levels = {
+  units: {
+    label: "0–10",
+    note: "Tone marks in the pronunciation aren't decoration — ห้า (5) falls, หก (6) is low. Getting the tone wrong can change the word entirely, so lean on the audio, not just the spelling.",
+    list: Array.from({length: 11}, (_, i) => thaiNumber(i))
+  },
+  teens: {
+    label: "11–20",
+    note: "Teens are built from สิบ (ten) plus a unit. The only twist: 11 uses เอ็ด (èt) instead of หนึ่ง for \"one\" — สิบเอ็ด, not สิบหนึ่ง.",
+    list: Array.from({length: 10}, (_, i) => thaiNumber(11 + i))
+  },
+  tens: {
+    label: "tens",
+    note: "Every multiple of ten is [unit] + สิบ, except 20, which uses ยี่ instead of สอง — ยี่สิบ, not สองสิบ. Learn these ten words and you can say any round number up to 100.",
+    list: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map(thaiNumber)
+  },
+  mix: {
+    label: "21–99 mix",
+    note: "Two-digit numbers combine a tens word with a unit — ยี่สิบเอ็ด is 21 (ยี่สิบ + เอ็ด, not หนึ่ง). This set samples across the range so you can practice the pattern rather than memorize every number.",
+    list: [21, 24, 31, 35, 42, 47, 53, 58, 61, 66, 73, 79, 82, 87, 91, 96, 99].map(thaiNumber)
+  },
+  hundreds: {
+    label: "hundreds",
+    note: "ร้อย means hundred. Multiples of a hundred are just [unit] + ร้อย — สองร้อย is 200, not ยี่ร้อย. The ยี่ swap only ever happens in the tens place.",
+    list: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000].map(thaiNumber)
+  },
+  hundredsMix: {
+    label: "100–999 mix",
+    note: "Full three-digit numbers stack the same building blocks in order: hundreds, then tens, then the unit — 132 is หนึ่งร้อยสามสิบสอง (one-hundred, three-ten, two). Read it left to right, place by place.",
+    list: [105, 132, 250, 316, 448, 555, 687, 799, 824, 999].map(thaiNumber)
+  },
+  thousands: {
+    label: "1,000+",
+    note: "From a thousand up, Thai keeps stacking the same kind of building blocks — พัน (thousand), หมื่น (ten thousand), แสน (hundred thousand) — in the same left-to-right order as smaller numbers.",
+    list: [1000, 2500, 5000, 7800, 10000, 25000, 50000, 87650, 100000, 250000, 500000, 999999].map(thaiNumber)
+  },
+  millions: {
+    label: "million+",
+    note: "Past a million, Thai doesn't invent new words — it just repeats ล้าน (million) as the anchor: สิบล้าน is ten million, ร้อยล้าน is a hundred million, and พันล้าน — literally \"thousand million\" — is how Thai says a billion.",
+    list: [1000000, 10000000, 100000000, 1000000000, 10000000000].map(thaiNumber)
+  }
+};
+
+let currentLevelKey = "units";
+let currentList = levels[currentLevelKey].list;
+
+// ---- level switcher ----
+const levelsEl = document.getElementById('levels');
+Object.keys(levels).forEach(key => {
+  const btn = document.createElement('button');
+  btn.className = 'level-btn' + (key === currentLevelKey ? ' active' : '');
+  btn.textContent = levels[key].label;
+  btn.addEventListener('click', () => setLevel(key));
+  btn.dataset.key = key;
+  levelsEl.appendChild(btn);
+});
+
+function setLevel(key) {
+  currentLevelKey = key;
+  currentList = levels[key].list;
+  [...levelsEl.children].forEach(b => b.classList.toggle('active', b.dataset.key === key));
+  document.getElementById('learn-note').textContent = levels[key].note;
+  idx = 0;
+  buildDots();
+  renderCard();
+}
+
+// ---- speech ----
+let thaiVoice = null;
+function loadVoices() {
+  const voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+  thaiVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('th')) || null;
+}
+if ('speechSynthesis' in window) {
+  loadVoices();
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+}
+
+function speakWithBrowser(text) {
+  if (!('speechSynthesis' in window)) {
+    alert('Audio could not be played, and this browser has no built-in speech fallback either.');
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'th-TH';
+  if (thaiVoice) utter.voice = thaiVoice;
+  utter.rate = 0.85;
+  window.speechSynthesis.speak(utter);
+}
+
+const ttsAudio = new Audio();
+function speak(text) {
+  const url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=th&client=tw-ob&q=' + encodeURIComponent(text);
+  ttsAudio.onerror = () => speakWithBrowser(text);
+  ttsAudio.src = url;
+  const playPromise = ttsAudio.play();
+  if (playPromise && playPromise.catch) {
+    playPromise.catch(() => speakWithBrowser(text));
+  }
+}
+
+// ---- font sizing helper (content length varies a lot once numbers grow) ----
+function fitFont(el, text, isThai) {
+  const len = String(text).length;
+  let size;
+  if (isThai) {
+    size = len > 16 ? 20 : len > 12 ? 24 : len > 8 ? 30 : len > 5 ? 38 : 46;
+  } else {
+    size = len > 10 ? 24 : len > 6 ? 28 : len > 4 ? 36 : 52;
+  }
+  el.style.fontSize = size + 'px';
+}
+
+// ---- card rendering ----
+let idx = 0;
+let flipped = false;
+const cardEyebrow = document.getElementById('card-eyebrow');
+const cardMain = document.getElementById('card-main');
+const cardSub = document.getElementById('card-sub');
+const dotsEl = document.getElementById('dots');
+const counterText = document.getElementById('counter-text');
+
+function buildDots() {
+  dotsEl.innerHTML = '';
+  if (currentList.length > 15) {
+    dotsEl.classList.add('hidden');
+    counterText.classList.remove('hidden');
+    return;
+  }
+  dotsEl.classList.remove('hidden');
+  counterText.classList.add('hidden');
+  currentList.forEach((item, i) => {
+    const d = document.createElement('button');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.setAttribute('aria-label', 'Go to number ' + item.n);
+    d.addEventListener('click', () => { idx = i; renderCard(); });
+    dotsEl.appendChild(d);
+  });
+}
+
+function renderCard() {
+  const item = currentList[idx];
+  flipped = false;
+  cardEyebrow.textContent = 'tap the card to flip';
+  cardMain.textContent = item.n.toLocaleString();
+  fitFont(cardMain, item.n.toLocaleString(), false);
+  cardSub.textContent = '';
+  if (currentList.length > 15) {
+    counterText.textContent = (idx + 1) + ' / ' + currentList.length;
+  } else {
+    [...dotsEl.children].forEach((d, i) => d.classList.toggle('active', i === idx));
+  }
+}
+
+document.getElementById('flip-card').addEventListener('click', (e) => {
+  if (e.target.closest('.speak-btn')) return;
+  const item = currentList[idx];
+  flipped = !flipped;
+  if (flipped) {
+    cardEyebrow.textContent = 'thai script / pronunciation';
+    cardMain.textContent = item.thai;
+    fitFont(cardMain, item.thai, true);
+    cardSub.textContent = item.rom;
+  } else {
+    cardEyebrow.textContent = 'tap the card to flip';
+    cardMain.textContent = item.n.toLocaleString();
+    fitFont(cardMain, item.n.toLocaleString(), false);
+    cardSub.textContent = '';
+  }
+});
+
+document.getElementById('prev-btn').addEventListener('click', () => {
+  idx = (idx - 1 + currentList.length) % currentList.length;
+  renderCard();
+});
+document.getElementById('next-btn').addEventListener('click', () => {
+  idx = (idx + 1) % currentList.length;
+  renderCard();
+});
+document.getElementById('speak-btn').addEventListener('click', () => {
+  speak(currentList[idx].thai);
+});
+
+setLevel('units');
+</script>
+</body>
+</html>
