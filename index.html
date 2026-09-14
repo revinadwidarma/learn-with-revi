@@ -3,54 +3,106 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Thai numbers</title>
+<title>Learn with Revi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ivory: #F2F2F2;
+    --bg: #FDF7F4;
     --card: #FFFFFF;
-    --ink: #1E2E32;
-    --ink-soft: #5C7C86;
-    --line: #C8D8E4;
-    --gold-deep: #3D8C79;
-    --teal: #2B6777;
-    --teal-deep: #234F5B;
-    --teal-tint: #E4F2EE;
+    --ink: #4A413D;
+    --ink-soft: #9C8F89;
+    --line: #F0DFDA;
+    --jade: #BEE3D6;
+    --jade-deep: #5C9C89;
+    --teal: #F0A9B3;
+    --teal-deep: #6FA8C4;
+    --teal-tint: #E4F1F7;
   }
 
   * { box-sizing: border-box; }
 
   body {
     margin: 0;
-    background: var(--ivory);
+    background: var(--bg);
     color: var(--ink);
     font-family: 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
 
+  /* ---- top bar ---- */
+  .topbar {
+    background: var(--teal-deep);
+  }
+
+  .topbar-inner {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 1.1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .brand-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 20px;
+    color: #fff;
+    letter-spacing: -0.01em;
+  }
+
+  /* ---- lesson tabs ---- */
+  .tabbar {
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    margin-top: 1.75rem;
+  }
+
+  .tabbar-inner {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: flex;
+    gap: 4px;
+  }
+
+  .tab-item {
+    position: relative;
+    top: 1px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-bottom: 1px solid var(--card);
+    border-radius: 10px 10px 0 0;
+    padding: 0.7rem 1.1rem 0.65rem;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--teal-deep);
+    cursor: default;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .tab-item .tab-glyph {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    color: var(--jade-deep);
+  }
+
+  /* ---- content ---- */
   .wrap {
     max-width: 620px;
     margin: 0 auto;
-    padding: 3rem 1.5rem 4rem;
+    padding: 2.25rem 1.5rem 3rem;
   }
 
-  header { margin-bottom: 1.75rem; }
-
-  h1 {
-    font-family: 'Newsreader', serif;
-    font-weight: 500;
-    font-size: 34px;
-    letter-spacing: -0.01em;
-    margin: 0 0 0.4rem;
-    color: var(--ink);
-  }
-
-  header p {
+  .wrap > .intro {
     font-size: 15px;
     color: var(--ink-soft);
-    margin: 0;
+    margin: 0 0 1.75rem;
     line-height: 1.6;
     max-width: 46ch;
   }
@@ -116,7 +168,7 @@
   }
 
   .card-main {
-    font-family: 'Newsreader', serif;
+    font-family: 'Fraunces', serif;
     font-weight: 500;
     margin: 0;
     line-height: 1.15;
@@ -126,10 +178,10 @@
 
   .card-sub {
     font-size: 18px;
-    color: var(--gold-deep);
+    color: var(--jade-deep);
     margin: 0.6rem 0 0;
     font-style: italic;
-    font-family: 'Newsreader', serif;
+    font-family: 'Fraunces', serif;
   }
 
   .strip {
@@ -188,15 +240,47 @@
   }
 
   .hidden { display: none; }
+
+  /* ---- footer ---- */
+  .site-footer {
+    border-top: 1px solid var(--line);
+    background: var(--card);
+  }
+
+  .footer-inner {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+  .footer-inner strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
 </style>
 </head>
 <body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <span class="brand-name">Learn with Revi</span>
+  </div>
+</div>
+
+<div class="tabbar">
+  <div class="tabbar-inner">
+    <button class="tab-item"><span class="tab-glyph">๑๒๓</span> Thai Numbers</button>
+  </div>
+</div>
+
 <div class="wrap">
 
-  <header>
-    <h1>Thai numbers</h1>
-    <p>Pick a level below, then flip the card to see the script and hear it spoken. Thai is tonal, so the sound matters as much as the spelling.</p>
-  </header>
+  <p class="intro">Pick a level below, then flip the card to see the script and hear it spoken. Thai is tonal, so the sound matters as much as the spelling.</p>
 
   <div class="levels" id="levels"></div>
 
@@ -217,6 +301,12 @@
   <p class="note" id="learn-note"></p>
 
 </div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span><strong>Learn with Revi</strong> — small steps, real progress.</span>
+  </div>
+</footer>
 
 <script>
 // ---- Thai number generator, handles arbitrarily large integers ----
@@ -375,12 +465,29 @@ function speakWithBrowser(text) {
 
 const ttsAudio = new Audio();
 function speak(text) {
+  let fallenBack = false;
+  function fallback() {
+    if (fallenBack) return;
+    fallenBack = true;
+    clearTimeout(timeoutId);
+    speakWithBrowser(text);
+  }
+
+  ttsAudio.pause();
+  ttsAudio.oncanplay = null;
+  ttsAudio.onplaying = null;
+  ttsAudio.onerror = null;
+
   const url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=th&client=tw-ob&q=' + encodeURIComponent(text);
-  ttsAudio.onerror = () => speakWithBrowser(text);
+  const timeoutId = setTimeout(fallback, 1200);
+
+  ttsAudio.onplaying = () => clearTimeout(timeoutId);
+  ttsAudio.onerror = fallback;
   ttsAudio.src = url;
+
   const playPromise = ttsAudio.play();
   if (playPromise && playPromise.catch) {
-    playPromise.catch(() => speakWithBrowser(text));
+    playPromise.catch(fallback);
   }
 }
 
