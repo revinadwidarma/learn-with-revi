@@ -7,6 +7,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- Free Cross-Platform Text-To-Speech Engine -->
+<script src="https://code.responsivevoice.org/responsivevoice.js?key=FREE_KEY"></script>
+
 <style>
   :root {
     --bg: #FDF7F4;
@@ -309,15 +313,12 @@
 </footer>
 
 <script>
-// ---- Thai number generator, handles arbitrarily large integers ----
+// ---- Thai number generator ----
 const unitsThai = ["","หนึ่ง","สอง","สาม","สี่","ห้า","หก","เจ็ด","แปด","เก้า"];
 const unitsRom  = ["","nèung","sŏng","săam","sìi","hâa","hòk","jèt","bpàet","gâo"];
 const placesThai = ["","สิบ","ร้อย","พัน","หมื่น","แสน"];
 const placesRom  = ["","sìp","rói","pan","mèun","săen"];
 
-// Converts a number under 1,000,000. forcedContext=true means this chunk
-// trails a higher place value (e.g. after "ล้าน"), so a lone final "1"
-// still becomes เอ็ด instead of หนึ่ง.
 function digitsToThai(num, forcedContext) {
   const digits = String(num).split('').map(Number);
   const len = digits.length;
@@ -348,8 +349,6 @@ function digitsToThai(num, forcedContext) {
   return { thai, rom };
 }
 
-// Beyond a million, Thai repeats ล้าน as the anchor (10,000,000 = สิบล้าน,
-// 1,000,000,000 = พันล้าน, and so on), so we recurse in chunks of 1e6.
 function megaThai(num, forcedContext) {
   if (num < 1000000) return digitsToThai(num, forcedContext);
   const chunk = Math.floor(num / 1000000);
@@ -439,59 +438,24 @@ function setLevel(key) {
   renderCard();
 }
 
-// ---- speech ----
-let thaiVoice = null;
-function loadVoices() {
-  const voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
-  thaiVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('th')) || null;
-}
-if ('speechSynthesis' in window) {
-  loadVoices();
-  window.speechSynthesis.onvoiceschanged = loadVoices;
-}
-
-function speakWithBrowser(text) {
-  if (!('speechSynthesis' in window)) {
-    alert('Audio could not be played, and this browser has no built-in speech fallback either.');
-    return;
-  }
-  window.speechSynthesis.cancel();
-  const utter = new SpeechSynthesisUtterance(text);
-  utter.lang = 'th-TH';
-  if (thaiVoice) utter.voice = thaiVoice;
-  utter.rate = 0.85;
-  window.speechSynthesis.speak(utter);
-}
-
-const ttsAudio = new Audio();
+// ---- reliable speech engine ----
 function speak(text) {
-  let fallenBack = false;
-  function fallback() {
-    if (fallenBack) return;
-    fallenBack = true;
-    clearTimeout(timeoutId);
-    speakWithBrowser(text);
-  }
-
-  ttsAudio.pause();
-  ttsAudio.oncanplay = null;
-  ttsAudio.onplaying = null;
-  ttsAudio.onerror = null;
-
-  const url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=th&client=tw-ob&q=' + encodeURIComponent(text);
-  const timeoutId = setTimeout(fallback, 1200);
-
-  ttsAudio.onplaying = () => clearTimeout(timeoutId);
-  ttsAudio.onerror = fallback;
-  ttsAudio.src = url;
-
-  const playPromise = ttsAudio.play();
-  if (playPromise && playPromise.catch) {
-    playPromise.catch(fallback);
+  if (typeof responsiveVoice !== 'undefined') {
+    responsiveVoice.cancel();
+    responsiveVoice.speak(text, "Thai Female", { rate: 0.85 });
+  } else if ('speechSynthesis' in window) {
+    // Web speech fallback
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'th-TH';
+    utter.rate = 0.85;
+    window.speechSynthesis.speak(utter);
+  } else {
+    alert("Audio playback is not supported on this device.");
   }
 }
 
-// ---- font sizing helper (content length varies a lot once numbers grow) ----
+// ---- font sizing helper ----
 function fitFont(el, text, isThai) {
   const len = String(text).length;
   let size;
